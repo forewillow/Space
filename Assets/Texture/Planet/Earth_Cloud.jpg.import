@@ -3,20 +3,19 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ndb0okhv70dk"
-path.s3tc="res://.godot/imported/Earth_Cloud.jpg-9640ad0f0aef06741575bb4e42710d1a.s3tc.ctex"
+path="res://.godot/imported/Earth_Cloud.jpg-9640ad0f0aef06741575bb4e42710d1a.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 
 [deps]
 
 source_file="res://Assets/Texture/Planet/Earth_Cloud.jpg"
-dest_files=["res://.godot/imported/Earth_Cloud.jpg-9640ad0f0aef06741575bb4e42710d1a.s3tc.ctex"]
+dest_files=["res://.godot/imported/Earth_Cloud.jpg-9640ad0f0aef06741575bb4e42710d1a.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1

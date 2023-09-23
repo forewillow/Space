@@ -1,28 +1,23 @@
-[gd_scene load_steps=15 format=3 uid="uid://3mfe56kyxrm6"]
+[gd_scene load_steps=24 format=3 uid="uid://3mfe56kyxrm6"]
 
 [ext_resource type="Texture2D" uid="uid://cpyydyvtqrp0n" path="res://Assets/Texture/Planet/Earth_Day.jpg" id="1_cj6pl"]
 [ext_resource type="Shader" path="res://Assets/Shader/earth.gdshader" id="1_j6blg"]
-[ext_resource type="Shader" path="res://Nodes/Decoration/earth_clouds.gdshader" id="1_t1a6y"]
+[ext_resource type="Script" path="res://Nodes/Decoration/universe.gd" id="1_n5k1u"]
 [ext_resource type="Shader" path="res://Assets/Shader/atmosphere.gdshader" id="2_5m1m8"]
 [ext_resource type="Texture2D" uid="uid://ndb0okhv70dk" path="res://Assets/Texture/Planet/Earth_Cloud.jpg" id="2_t3rkg"]
 [ext_resource type="Texture2D" uid="uid://de545o2vmkro5" path="res://Assets/Texture/Planet/Earth_Night.jpg" id="3_3ve36"]
 [ext_resource type="Texture2D" uid="uid://bcsc6nco55t4h" path="res://Assets/Texture/Planet/Earth_Norm.jpg" id="4_y34c8"]
 [ext_resource type="Texture2D" uid="uid://fgdk2rx65xnw" path="res://Assets/Texture/Planet/Earth_Spec.jpg" id="5_hxq46"]
+[ext_resource type="Shader" path="res://Assets/Shader/sun_lens_flare.gdshader" id="8_lc76r"]
+[ext_resource type="Texture2D" uid="uid://qub0sdi3sgkt" path="res://Assets/Texture/Particle/star_02.png" id="9_2p101"]
+[ext_resource type="Texture2D" uid="uid://5ia2135f8xu8" path="res://Assets/Texture/Planet/Universe.jpg" id="10_ohrfj"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_kk6i5"]
-radius = 26.0
-height = 52.0
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_kfoga"]
-render_priority = 0
-shader = ExtResource("1_t1a6y")
-shader_parameter/thickness = 0.5
-shader_parameter/speed = 0.005
-shader_parameter/cloud_map = ExtResource("2_t3rkg")
+radius = 500.0
+height = 1000.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lcmc0"]
 render_priority = 0
-next_pass = SubResource("ShaderMaterial_kfoga")
 shader = ExtResource("1_j6blg")
 shader_parameter/emission_strength = 1.0
 shader_parameter/rotation_speed = 0.001
@@ -30,42 +25,93 @@ shader_parameter/albedo_day = ExtResource("1_cj6pl")
 shader_parameter/albedo_night = ExtResource("3_3ve36")
 shader_parameter/normal_map = ExtResource("4_y34c8")
 shader_parameter/spec_map = ExtResource("5_hxq46")
+shader_parameter/cloud_map = ExtResource("2_t3rkg")
 
 [sub_resource type="BoxMesh" id="BoxMesh_tv4rj"]
 flip_faces = true
-size = Vector3(60, 60, 60)
+size = Vector3(1000, 1000, 1000)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ik10t"]
 render_priority = 0
 shader = ExtResource("2_5m1m8")
 shader_parameter/light_intensity = Vector3(20, 20, 20)
-shader_parameter/planet_radius = 26.0
-shader_parameter/atmo_radius = 32.0
+shader_parameter/planet_radius = 490.0
+shader_parameter/atmo_radius = 550.0
 shader_parameter/beta_ray = Vector3(1, 2, 3)
 shader_parameter/beta_mie = Vector3(1, 1, 1)
 shader_parameter/beta_ambient = Vector3(0, 0, 0)
 shader_parameter/beta_e = 0.0
 shader_parameter/g = 0.8
-shader_parameter/height_ray = 0.5
+shader_parameter/height_ray = 3.0
 shader_parameter/height_mie = 0.25
-shader_parameter/density_multiplier = 0.2
-shader_parameter/steps_i = 16
+shader_parameter/density_multiplier = 1.0
+shader_parameter/steps_i = 32
 shader_parameter/steps_l = 4
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h8d4a"]
+blend_mode = 1
+shading_mode = 0
+albedo_color = Color(1, 0.865, 0.82, 1)
+albedo_texture = ExtResource("9_2p101")
+billboard_mode = 1
+
+[sub_resource type="QuadMesh" id="QuadMesh_ay4tc"]
+material = SubResource("StandardMaterial3D_h8d4a")
+size = Vector2(500, 500)
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_t2o71"]
+panorama = ExtResource("10_ohrfj")
+
+[sub_resource type="Sky" id="Sky_2eyb2"]
+sky_material = SubResource("PanoramaSkyMaterial_t2o71")
+
 [sub_resource type="Environment" id="Environment_uwcci"]
-background_mode = 1
+background_mode = 2
+background_energy_multiplier = 0.05
+sky = SubResource("Sky_2eyb2")
+glow_normalized = true
+glow_intensity = 5.39
+glow_strength = 2.0
+glow_blend_mode = 0
+glow_hdr_threshold = 4.0
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_1o0q7"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_xodpe"]
+noise = SubResource("FastNoiseLite_1o0q7")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_k6pd4"]
+shader = ExtResource("8_lc76r")
+shader_parameter/sun_position = Vector2(0, 0)
+shader_parameter/tint = Vector3(2.8, 2.4, 2)
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_xodpe")
 
 [node name="Universe" type="Node3D"]
+script = ExtResource("1_n5k1u")
 
 [node name="Earth" type="MeshInstance3D" parent="."]
 mesh = SubResource("SphereMesh_kk6i5")
 surface_material_override/0 = SubResource("ShaderMaterial_lcmc0")
 
 [node name="Atmosphere" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.983258, 0.182218, 0, -0.182218, 0.983258, 0, 0, 0)
 mesh = SubResource("BoxMesh_tv4rj")
 surface_material_override/0 = SubResource("ShaderMaterial_ik10t")
 
 [node name="Sun" type="DirectionalLight3D" parent="Atmosphere"]
 
+[node name="SunMesh" type="MeshInstance3D" parent="Atmosphere"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3000)
+mesh = SubResource("QuadMesh_ay4tc")
+
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_uwcci")
+
+[node name="Lens" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_k6pd4")
+offset_right = 4270.0
+offset_bottom = 2136.0
+color = Color(0, 0, 0, 1)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-0.595917, 0.229609, -0.769521, -3.72529e-09, 0.958253, 0.285923, 0.803046, 0.170386, -0.571039, -728.908, 256.824, -297.484)
